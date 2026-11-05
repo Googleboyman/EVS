@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Smart Water Guard: a student digital model of a leak-detecting, auto-shut-off plumbing system. CIV104, NMIT Bengaluru.">
+<title>Smart Water Guard</title>
+<style>
+:root{--bg:#fff;--tx:#0f172a;--mu:#475569;--bd:#64748b;--ln:#cbd5e1;--ac:#1e3a8a;--on:#fff;--bad:#b91c1c;--ok:#166534;--wt:#2563eb;--sf:#f1f5f9;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1220;--tx:#f1f5f9;--mu:#cbd5e1;--bd:#94a3b8;--ln:#334155;--ac:#93c5fd;--on:#0b1220;--bad:#fca5a5;--ok:#86efac;--wt:#60a5fa;--sf:#131c2e;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1220;--tx:#f1f5f9;--mu:#cbd5e1;--bd:#94a3b8;--ln:#334155;--ac:#93c5fd;--on:#0b1220;--bad:#fca5a5;--ok:#86efac;--wt:#60a5fa;--sf:#131c2e;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:17px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+a{color:var(--ac);text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--ac);outline-offset:3px}
+.skip{position:absolute;left:8px;top:-60px;background:var(--ac);color:var(--on);padding:10px 14px;z-index:9}.skip:focus{top:8px}
+header,main,footer{max-width:960px;margin:0 auto;padding:0 20px}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;padding-top:18px;padding-bottom:18px;border-bottom:1px solid var(--ln)}
+.brand{font-weight:700;font-size:18px;text-decoration:none;color:var(--tx)}
+nav ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 18px}
+nav a{color:var(--tx);text-decoration:none;padding:6px 0;border-bottom:2px solid transparent;font-size:15px}
+nav a:hover,nav a[aria-current="page"]{border-bottom-color:var(--ac)}
+main{padding-top:40px;padding-bottom:56px;min-height:60vh}
+h1{font-size:clamp(30px,6vw,52px);line-height:1.1;margin:0 0 16px;letter-spacing:-.02em}
+h2{font-size:22px;margin:32px 0 8px}
+.lead{font-size:20px;color:var(--mu);max-width:640px}
+.eyebrow{font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin:0 0 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:28px 0;padding:0;list-style:none}
+.tile{display:block;border:1px solid var(--bd);border-radius:2px;padding:18px;text-decoration:none;color:var(--tx);height:100%}
+.tile:hover{background:var(--sf)}.tile b{display:block;font-size:19px;color:var(--ac)}.tile span{color:var(--mu);font-size:15px}
+.btn{font:inherit;font-weight:600;padding:10px 16px;border-radius:2px;border:2px solid var(--ac);background:var(--bg);color:var(--ac);cursor:pointer;min-height:44px}
+.btn.p{background:var(--ac);color:var(--on)}.btn[aria-pressed="true"]{background:var(--ac);color:var(--on)}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}.row .btn{border-radius:999px;padding:10px 20px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:16px 0;padding:0;list-style:none}
+.stats li{border:1px solid var(--bd);border-radius:2px;padding:12px}.stats b{display:block;font-size:24px}.stats span{font-size:14px;color:var(--mu)}
+svg{width:100%;height:auto;display:block;border:1px solid var(--ln);border-radius:2px;background:var(--sf)}
+svg text{fill:var(--tx);font-size:14px}
+.box{fill:var(--bg);stroke:var(--bd);stroke-width:1.5;rx:14px;ry:14px}.pipe{stroke:var(--ln);stroke-width:10;fill:none;stroke-linecap:round}
+.flow{stroke:var(--wt);stroke-width:5;fill:none;stroke-dasharray:8 8;animation:f .5s linear infinite}
+@keyframes f{to{stroke-dashoffset:-16}}
+@media (prefers-reduced-motion:reduce){.flow{animation:none}}
+#log{max-height:160px;overflow:auto;font:14px/1.6 ui-monospace,Menlo,monospace;border:1px solid var(--ln);border-radius:2px;padding:8px;margin:0}
+#log .a{color:var(--bad)}#log .g{color:var(--ok)}
+pre{overflow:auto;background:var(--sf);padding:14px;border-radius:2px;font-size:14px;border:1px solid var(--ln)}
+.sc{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:16px}th,td{border:1px solid var(--bd);padding:8px 10px;text-align:left;vertical-align:top}th{background:var(--sf)}
+input[type=text]{font:inherit;width:100%;padding:8px;border:1px solid var(--bd);border-radius:2px;background:var(--bg);color:var(--tx);min-height:40px}
+.note{border-left:4px solid var(--ac);padding:8px 14px;background:var(--sf);margin:20px 0}
+.ph{background:var(--sf);border:1px dashed var(--bd);padding:0 4px}
+.pn{display:flex;justify-content:space-between;gap:12px;margin-top:40px;padding-top:16px;border-top:1px solid var(--ln)}
+footer{border-top:1px solid var(--ln);padding-top:20px;padding-bottom:32px;font-size:15px;color:var(--mu)}
+footer ul{list-style:none;margin:0 0 10px;padding:0;display:flex;flex-wrap:wrap;gap:4px 18px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style></head><body>
+<a class="skip" href="#main">Skip to main content</a>
+<header><a class="brand" href="#home">Smart Water Guard</a>
+<nav aria-label="Main"><ul>
+<li><a href="#problem">1 Problem &amp; idea</a></li><li><a href="#simulation">2 Simulation</a></li><li><a href="#logic">3 Logic &amp; code</a></li><li><a href="#components">4 Components</a></li></ul></nav></header>
+<main id="main" tabindex="-1">
+
+<section data-p="home" hidden>
+<p class="eyebrow">Student project · CIV104 · NMIT Bengaluru</p>
+<h1>A smart plumbing idea that closes the valve when water runs where it should not.</h1>
+<p class="lead">A digital model of a leak sensor with automatic shut-off, created for the LA-2 assignment “Smart Ideas for Saving Water”. It is a classroom concept, not a product.</p>
+<ul class="grid">
+<li><a class="tile" href="#problem"><b>1 · Problem &amp; idea</b><span>What goes wrong, what we propose, which SDGs it supports.</span></a></li>
+<li><a class="tile" href="#simulation"><b>2 · Simulation</b><span>Try a leak and watch the model respond.</span></a></li>
+<li><a class="tile" href="#logic"><b>3 · Logic &amp; code</b><span>Control steps and a concept Arduino sketch.</span></a></li>
+<li><a class="tile" href="#components"><b>4 · Components</b><span>The parts the circuit would need.</span></a></li>
+</ul>
+</section>
+
+<section data-p="problem" hidden>
+<p class="eyebrow">Point 1 of 5</p><h1>Problem and idea</h1>
+<h2>The problem</h2><p>In the plumbing lab (and in hostels, homes and buildings), hidden pipe leaks, dripping joints and taps left open run unnoticed, wasting treated water.</p>
+<p>In the NSSKC Plumbing Lab, water is supplied, used and drained through pipes, joints and taps. A slow leak or a tap left running can go unnoticed, and the water is lost.</p>
+<h2>Our idea</h2><p>Place a flow sensor on the supply line, connected to a small microcontroller. If water flows when nobody is using a fixture, or a tap runs for too long, the controller sounds an alarm and closes a solenoid valve.</p>
+<h2>How it could help</h2><p>The aim is to stop a leak sooner than a person would notice it, and to keep a log of when it happened. The figures on the simulation page are made up for demonstration. We have not measured real savings.</p>
+<h2>Sustainable Development Goals</h2>
+<ul><li><b>SDG 6, Clean Water and Sanitation:</b> reduces wasted water.</li><li><b>SDG 11, Sustainable Cities and Communities:</b> a low-cost idea that could be adapted for buildings.</li></ul>
+<nav class="pn" aria-label="Page navigation"><span></span><a href="#simulation">Next: 2 Simulation →</a></nav>
+</section>
+
+<section data-p="simulation" hidden>
+<p class="eyebrow">Point 2 of 5</p><h1>Live simulation</h1>
+<p>Use the buttons below. One tick is one simulated minute. The tap uses 8 litres per minute and the leak 3 litres per minute. These are demonstration values.</p>
+<svg viewBox="0 0 720 230" role="img" aria-labelledby="st sd"><title id="st">Plumbing diagram</title><desc id="sd">Water flows from an overhead tank through a flow sensor and a solenoid valve to a tap. A pipe joint can leak. A controller reads the sensor and operates the valve.</desc>
+<rect class="box" x="10" y="70" width="90" height="90"/><text x="55" y="112" text-anchor="middle">Overhead</text><text x="55" y="130" text-anchor="middle">tank</text>
+<path class="pipe" d="M100 115H640"/><path id="fl" class="flow" d="M100 115H640" style="display:none"/>
+<rect class="box" x="160" y="85" width="110" height="60"/><text x="215" y="108" text-anchor="middle">Flow sensor</text><text id="rd" x="215" y="128" text-anchor="middle">0.0 L/min</text>
+<rect class="box" x="300" y="85" width="90" height="60"/><text x="345" y="108" text-anchor="middle">Valve</text><text id="vs" x="345" y="128" text-anchor="middle">OPEN</text>
+<rect class="box" x="440" y="175" width="120" height="40"/><text x="500" y="200" text-anchor="middle">Controller</text>
+<path d="M215 145V195H440M345 145V160H500V175" stroke="var(--ac)" stroke-width="2" fill="none" stroke-dasharray="5 4"/>
+<rect class="box" x="580" y="75" width="80" height="40"/><text x="620" y="100" text-anchor="middle">Tap</text><text id="ts" x="620" y="66" text-anchor="middle">closed</text>
+<text x="500" y="75" text-anchor="middle">Joint</text><circle id="lc" cx="500" cy="115" r="9" fill="none" stroke="var(--ok)" stroke-width="3"/><text id="ls" x="500" y="152" text-anchor="middle">sealed</text>
+<text id="al" x="360" y="30" text-anchor="middle" style="fill:var(--bad);font-size:16px;font-weight:700"></text></svg>
+<div class="row">
+<button class="btn" id="bTap" aria-pressed="false">Open or close the tap</button>
+<button class="btn" id="bLeak">Start a hidden leak at the joint</button>
+<button class="btn p" id="bRes">Repair the leak and reopen the valve</button>
+<button class="btn" id="bClr">Restart the simulation from zero</button></div>
+<p><label for="sp">Simulation speed </label><select id="sp"><option value="400">Normal</option><option value="150" selected>Fast</option><option value="60">Very fast</option></select></p>
+<p id="clk" aria-live="off"></p>
+<ul class="stats"><li><b id="s1">0 L</b><span>Wasted without the system (simulated)</span></li><li><b id="s2">0 L</b><span>Wasted with the system (simulated)</span></li><li><b id="s3">0 L</b><span>Difference (simulated)</span></li><li><b id="s4">–</b><span>Time to detect the leak</span></li></ul>
+<h2>Event log</h2><div id="log" role="log" aria-live="polite" tabindex="0" aria-label="Event log"></div>
+<nav class="pn" aria-label="Page navigation"><a href="#problem">← 1 Problem &amp; idea</a><a href="#logic">Next: 3 Logic →</a></nav>
+</section>
+
+<section data-p="logic" hidden>
+<p class="eyebrow">Point 3 of 5</p><h1>Control logic and code</h1>
+<ol><li>Read the flow sensor once a minute.</li><li>Check whether a fixture is meant to be in use.</li><li>If the flow is higher than the fixtures in use should give (any flow when none is in use) for 5 minutes, or a tap runs for 15 minutes, raise the alarm.</li><li>Close the valve and record the event.</li><li>Wait for a person to repair the problem and press reset.</li></ol>
+<p>The 5 and 15 minute limits are example settings that a real installation would need to tune.</p>
+<h2>Concept Arduino sketch</h2>
+<pre tabindex="0" aria-label="Arduino sketch">// Concept only, not tested on hardware
+const int FLOW=2, VALVE=7, BUZ=8;
+volatile int pulses=0; int bad=0, tapOn=0;
+void setup(){
+  pinMode(VALVE,OUTPUT); pinMode(BUZ,OUTPUT);
+  digitalWrite(VALVE,HIGH);                 // valve open
+  attachInterrupt(digitalPinToInterrupt(FLOW),[]{pulses++;},RISING);
+}
+void loop(){
+  delay(60000);                             // one minute
+  float lpm = pulses/7.5; pulses=0;         // typical for YF-S201
+  bool inUse = tapInUse();                  // button or schedule input
+  if(lpm > expectedFlow(inUse)) bad++; else bad=0;  // 0 if idle, 8 if tap in use
+  tapOn = (inUse &amp;&amp; lpm>0) ? tapOn+1 : 0;
+  if(bad>=5 || tapOn>=15){
+    digitalWrite(BUZ,HIGH);
+    digitalWrite(VALVE,LOW);                // close valve
+  }
+}</pre>
+<nav class="pn" aria-label="Page navigation"><a href="#simulation">← 2 Simulation</a><a href="#components">Next: 4 Components →</a></nav>
+</section>
+
+<section data-p="components" hidden>
+<p class="eyebrow">Point 4 of 5</p><h1>Components</h1>
+<div class="sc"><table><caption class="vh">Parts list</caption><tr><th scope="col">Part</th><th scope="col">Role</th></tr>
+<tr><td>Flow sensor (for example YF-S201)</td><td>Measures litres per minute on the supply line</td></tr>
+<tr><td>Solenoid valve and relay</td><td>Closes the supply automatically</td></tr>
+<tr><td>Arduino Uno or ESP8266</td><td>Runs the logic; an ESP board could send phone alerts</td></tr>
+<tr><td>Buzzer or LED</td><td>Local alarm</td></tr>
+<tr><td>Push button</td><td>Manual reset after repair</td></tr></table></div>
+<p class="note">Mains-water and electrical work should be done by a qualified person. This page is a concept, not installation instructions.</p>
+<nav class="pn" aria-label="Page navigation"><a href="#logic">← 3 Logic</a><a href="#home">Back to start</a></nav>
+</section>
+
+
+
+<section data-p="privacy" hidden>
+<h1>Privacy policy</h1><p>Last updated: 5 November 2026.</p>
+<h2>What we collect</h2><p>This site does not ask for, store or send any personal information. It has no accounts, no forms and no comment boxes.</p>
+<h2>Analytics and third parties</h2><p>We do not use analytics, advertising, social media widgets, embedded videos, maps or external fonts. If we add any of these, we will update this policy first and ask for your consent where the law requires it.</p>
+<h2>Hosting logs</h2><p>Like most websites, the host may record technical data such as IP address and browser type to deliver and secure the page. We do not receive or use that data.</p>
+<h2>Children</h2><p>The site is not aimed at children and collects nothing from anyone.</p>
+</section>
+
+<section data-p="terms" hidden>
+<h1>Terms and conditions</h1><p>Last updated: 5 November 2026.</p>
+<h2>Educational use</h2><p>This site is a student assignment for CIV104 at NMIT. It is a concept and simulation, not a commercial product or professional engineering advice.</p>
+<h2>No warranty</h2><p>Figures in the simulation are invented for demonstration. The code and circuit are untested concepts. Do not rely on them for real plumbing, electrical or safety decisions. Use a qualified professional.</p>
+<h2>Liability</h2><p>To the extent permitted by law, the authors are not liable for loss arising from use of this site or the ideas on it.</p>
+<h2>Content</h2><p>The content is the work of the student team behind this project. You may link to it. Please do not copy it without permission.</p>
+<h2>Changes and law</h2><p>We may update these terms. They are governed by the laws of India. <span class="ph">[Confirm which courts apply]</span></p>
+</section>
+
+
+</main>
+<footer><ul><li><a href="#privacy">Privacy policy</a></li><li><a href="#terms">Terms and conditions</a></li></ul>
+<p>Smart Water Guard · Student project, Dept. of Civil Engineering, Nitte Meenakshi Institute of Technology, Bengaluru, India. Not legal or engineering advice.</p></footer>
+
+<script>
+const $=id=>document.getElementById(id);
+const T={home:"Smart Water Guard",problem:"1 Problem and idea",simulation:"2 Simulation",logic:"3 Logic and code",components:"4 Components",privacy:"Privacy policy",terms:"Terms and conditions"};
+let timer=null,S;
+function route(first){
+ let h=(location.hash||"#home").slice(1);if(!T[h])h="home";
+ document.querySelectorAll("[data-p]").forEach(s=>s.hidden=s.dataset.p!==h);
+ document.querySelectorAll("nav a").forEach(a=>a.getAttribute("href")==="#"+h?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current"));
+ document.title=(h==="home"?"":T[h]+" · ")+"Smart Water Guard";
+ clearInterval(timer);if(h==="simulation")startT();
+ if(!first){window.scrollTo(0,0);const e=$("main");e.focus({preventScroll:true})}
+}
+function init(){S={tap:false,leak:false,leakAt:null,valve:true,t:0,bad:0,tapOn:0,wNo:0,wYes:0,det:null,alert:"",flow:0};$("log").innerHTML="";$("bTap").setAttribute("aria-pressed","false");draw()}
+function log(m,c){const d=document.createElement("div");d.className=c||"";d.textContent="Minute "+S.t+": "+m;$("log").prepend(d)}
+function tick(){S.t++;
+ const raw=(S.tap?8:0)+(S.leak?3:0);S.wNo+=raw;
+ const f=S.valve?raw:0;S.wYes+=f;S.flow=f;
+ if(f-(S.tap?8:0)>0)S.bad++;else S.bad=0;
+ S.tapOn=(S.tap&&f>0)?S.tapOn+1:0;
+ if(S.valve&&(S.bad>=5||S.tapOn>=15)){S.valve=false;
+  S.alert=S.bad>=5?"ALERT: leak detected, valve closed":"ALERT: tap left open, valve closed";
+  if(S.leakAt!==null)S.det=S.t-S.leakAt;log(S.alert,"a")}
+ draw()}
+function draw(){
+ $("fl").style.display=S.flow>0?"block":"none";
+ $("rd").textContent=S.flow.toFixed(1)+" L/min";
+ $("vs").textContent=S.valve?"OPEN":"CLOSED";
+ $("ts").textContent=S.tap?"running":"closed";
+ $("lc").setAttribute("stroke",S.leak?"var(--bad)":"var(--ok)");
+ $("ls").textContent=S.leak?"LEAKING":"sealed";
+ $("al").textContent=S.alert;
+ $("s1").textContent=S.wNo+" L";$("s2").textContent=S.wYes+" L";
+ $("s3").textContent=(S.wNo-S.wYes)+" L";
+ $("s4").textContent=S.det!==null?S.det+" min":(S.leak&&S.valve?"Detecting…":"–");
+ $("clk").textContent="Simulated time: "+S.t+" minutes. Valve is "+(S.valve?"open":"closed")+".";}
+function startT(){clearInterval(timer);timer=setInterval(tick,+$("sp").value)}
+$("sp").onchange=startT;
+$("bTap").onclick=()=>{S.tap=!S.tap;$("bTap").setAttribute("aria-pressed",S.tap);log("Tap "+(S.tap?"opened":"closed"));draw()};
+$("bLeak").onclick=()=>{if(!S.leak){S.leak=true;S.leakAt=S.t;S.det=null;log("Hidden leak started at the joint","a")}draw()};
+$("bRes").onclick=()=>{S.leak=false;S.valve=true;S.alert="";S.bad=0;S.tapOn=0;S.leakAt=null;log("Leak repaired, valve reopened","g");draw()};
+$("bClr").onclick=init;
+init();addEventListener("hashchange",()=>route(false));route(true);
+</script></body></html>
